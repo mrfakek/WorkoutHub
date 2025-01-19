@@ -1,12 +1,17 @@
 package by.tms.workouthub.service;
 
+import by.tms.workouthub.dto.AccountCreateDto;
+import by.tms.workouthub.dto.AccountResponseDto;
 import by.tms.workouthub.dto.AccountUpdateDto;
 import by.tms.workouthub.dto.PublicAccountDto;
 import by.tms.workouthub.entity.Account;
+import by.tms.workouthub.enums.Role;
 import by.tms.workouthub.exceptions.AccessDeniedException;
+import by.tms.workouthub.exceptions.AccountAlreadyExistsException;
 import by.tms.workouthub.exceptions.NotFoundEntityException;
+import by.tms.workouthub.mappers.AccountMapper;
 import by.tms.workouthub.repository.AccountRepository;
-import jakarta.persistence.EntityNotFoundException;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -23,49 +28,50 @@ import java.util.Optional;
 public class AccountService implements UserDetailsService {
 
     private final AccountRepository accountRepository;
+    private final AccountMapper accountMapper;
 
-    public AccountService(AccountRepository accountRepository) {
+    public AccountService(AccountRepository accountRepository, AccountMapper accountMapper) {
         this.accountRepository = accountRepository;
+        this.accountMapper = accountMapper;
     }
 
-    public Account create(Account account) {
-        account.setPassword(new BCryptPasswordEncoder(11).encode(account.getPassword()));
-        account.setCreatedAt(LocalDateTime.now());
-        accountRepository.save(account);
-        return account;
+    public AccountResponseDto create(AccountCreateDto accountCreateDto) {
+        Account newAccount = new Account();
+        newAccount.setUsername(accountCreateDto.getUsername());
+        newAccount.setPassword(new BCryptPasswordEncoder(11).encode(accountCreateDto.getPassword()));
+        newAccount.setCreatedAt(LocalDateTime.now());
+        newAccount.setRole(Role.ADMIN);
+        try {
+            newAccount = accountRepository.save(newAccount);
+        }catch (DataIntegrityViolationException e){
+            throw new AccountAlreadyExistsException("Account with this name already exists.");
+        }
+        AccountResponseDto accountResponseDto = accountMapper.toAccountResponseDto(newAccount);
+        return accountResponseDto;
+    }
+    public AccountResponseDto getAccount(Authentication authentication) {
+        Account account = accountRepository.findByUsername(authentication.getName()).orElseThrow(() -> new NotFoundEntityException("Account not found"));
+        return accountMapper.toAccountResponseDto(account);
     }
 
     public PublicAccountDto getAccountByUsername(String username) {
-        Optional<Account> account = accountRepository.findByUsername(username);
-        if (account.isPresent()) {
-            return ConvertToPublicAccountDto(account.get());
-        }
-        throw new NotFoundEntityException("Account not found");
+        Account account = accountRepository.findByUsername(username).orElseThrow(()->new NotFoundEntityException("Account not found"));
+            return accountMapper.toPublicAccountDto(account);
+
     }
 
-    public PublicAccountDto ConvertToPublicAccountDto(Account account) {
-        PublicAccountDto publicAccountDto = new PublicAccountDto();
-        publicAccountDto.setUsername(account.getUsername());
-        publicAccountDto.setFirstName(account.getFirstName());
-        publicAccountDto.setLastName(account.getLastName());
-        publicAccountDto.setCreatedAt(account.getCreatedAt());
-        return publicAccountDto;
+    public AccountResponseDto update(AccountUpdateDto accountUpdateDto, Authentication authentication) {
+        Account account = accountRepository.findByUsername(authentication.getName()).orElseThrow(() -> new NotFoundEntityException("Account not found"));
+        account.setFirstName(accountUpdateDto.getFirstName());
+        account.setLastName(accountUpdateDto.getLastName());
+        account.setEmail(accountUpdateDto.getEmail());
+        Account updatedAccount = accountRepository.save(account);
+        return accountMapper.toAccountResponseDto(updatedAccount);
     }
 
-    public Account update(AccountUpdateDto accountUpdateDto, String username, Authentication authentication) {
-        checkAccount(username, authentication);
-       Account account = accountRepository.findByUsername(username).orElseThrow(()-> new NotFoundEntityException("Account not found"));
-       account.setFirstName(accountUpdateDto.getFirstName());
-       account.setLastName(accountUpdateDto.getLastName());
-       account.setEmail(accountUpdateDto.getEmail());
-       return account;
-    }
-
-    public boolean delete (String username, Authentication authentication) {
-        checkAccount(username, authentication);
-        Account account  = accountRepository.findByUsername(username).orElseThrow(()-> new NotFoundEntityException("Account not found"));
+    public void delete(Authentication authentication) {
+        Account account = accountRepository.findByUsername(authentication.getName()).orElseThrow(() -> new NotFoundEntityException("Account not found"));
         accountRepository.delete(account);
-        return true;
     }
 
     public void checkAccount(String username, Authentication authentication) {
@@ -74,6 +80,7 @@ public class AccountService implements UserDetailsService {
             throw new AccessDeniedException("You do not have sufficient access rights to modify this account.");
         }
     }
+
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         Optional<Account> account = accountRepository.findByUsername(username);
@@ -82,7 +89,7 @@ public class AccountService implements UserDetailsService {
             return User
                     .withUsername(acc.getUsername())
                     .password(acc.getPassword())
-                    .roles("USER")
+                    .roles(acc.getRole().name())
                     .build();
         }
         throw new UsernameNotFoundException(username);

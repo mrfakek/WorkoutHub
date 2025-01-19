@@ -44,6 +44,7 @@ public class SecurityConfiguration {
                         c.requestMatchers(HttpMethod.POST, "/account", "/auth/**").permitAll()
                                 .requestMatchers("/v3/api-docs/**",
                                         "/swagger-ui/**", "/swagger-ui.html").permitAll()
+                                .requestMatchers("/moderator/**").hasAnyRole("MODERATOR", "ADMIN")
                                 .anyRequest().authenticated()
                 )
                 .exceptionHandling(c ->

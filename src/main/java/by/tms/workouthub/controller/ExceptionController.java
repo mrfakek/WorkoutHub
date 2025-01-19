@@ -1,7 +1,7 @@
 package by.tms.workouthub.controller;
 
+import by.tms.workouthub.exceptions.AccountAlreadyExistsException;
 import by.tms.workouthub.exceptions.NotFoundEntityException;
-import jakarta.persistence.EntityNotFoundException;
 import org.apache.commons.lang3.exception.UncheckedIllegalAccessException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -17,5 +17,9 @@ public class ExceptionController {
     @ExceptionHandler(UncheckedIllegalAccessException.class)
     public ResponseEntity<?> handleIllegalErrorException(UncheckedIllegalAccessException ex) {
         return new ResponseEntity<>(ex.getMessage(), HttpStatus.FORBIDDEN);
+    }
+    @ExceptionHandler(AccountAlreadyExistsException.class)
+    public ResponseEntity<?> handleAccountAlreadyExistsException(AccountAlreadyExistsException ex) {
+        return new ResponseEntity<>(ex.getMessage(), HttpStatus.CONFLICT);
     }
 }

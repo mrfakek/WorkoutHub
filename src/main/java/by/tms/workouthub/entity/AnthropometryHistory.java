@@ -9,7 +9,7 @@ import java.time.LocalDateTime;
 @Entity
 @Data
 @ToString
-@Table(name = "anthropometry_history")
+@Table(name = "anthropometry_historys")
 public class AnthropometryHistory {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -19,5 +19,6 @@ public class AnthropometryHistory {
     private Account owner;
     private double height;
     private double weight;
+    @Temporal(TemporalType.TIMESTAMP)
     private LocalDateTime createdAt;
 }

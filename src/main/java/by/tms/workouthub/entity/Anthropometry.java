@@ -19,9 +19,11 @@ public class Anthropometry {
     private Long id;
     @OneToOne(mappedBy = "currentAnthropometry")
     private Account owner;
+    @Temporal(TemporalType.DATE)
     private LocalDate birthday;
     private int age;
     private double height;
     private double weight;
+    @Temporal(TemporalType.TIMESTAMP)
     private LocalDateTime createdAt;
 }

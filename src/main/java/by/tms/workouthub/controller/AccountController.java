@@ -1,6 +1,8 @@
 package by.tms.workouthub.controller;
 
 
+import by.tms.workouthub.dto.AccountCreateDto;
+import by.tms.workouthub.dto.AccountResponseDto;
 import by.tms.workouthub.dto.AccountUpdateDto;
 import by.tms.workouthub.dto.PublicAccountDto;
 import by.tms.workouthub.entity.Account;
@@ -22,31 +24,29 @@ public class AccountController {
     }
 
     @PostMapping
-    public ResponseEntity<Account> createAccount(@RequestBody Account account) {
-        var saved = accountService.create(account);
+    public ResponseEntity<AccountResponseDto> createAccount(@RequestBody AccountCreateDto accountCreateDto) {
+        var saved = accountService.create(accountCreateDto);
         return new ResponseEntity<>(saved, HttpStatus.CREATED);
     }
 
     @GetMapping("/{username}")
-    public ResponseEntity<PublicAccountDto> getAccount(@PathVariable("username") String username) {
+    public ResponseEntity<PublicAccountDto> getAccountByUsername(@PathVariable("username") String username) {
         return new ResponseEntity<>(accountService.getAccountByUsername(username), HttpStatus.OK);
     }
+    @GetMapping
+    public ResponseEntity<AccountResponseDto> getAccount(Authentication authentication) {
+        return new ResponseEntity<>(accountService.getAccount(authentication), HttpStatus.OK);
+    }
 
-    @PatchMapping("/{username}/update")
-    public ResponseEntity<Account> updateAccount(
-            @PathVariable("username") String username,
-            Authentication authentication,
-            @RequestBody AccountUpdateDto accountUpdateDto
-    ) {
-        var updated = accountService.update(accountUpdateDto, username, authentication);
+    @PatchMapping
+    public ResponseEntity<AccountResponseDto> updateAccount(Authentication authentication, @RequestBody AccountUpdateDto accountUpdateDto) {
+        var updated = accountService.update(accountUpdateDto, authentication);
         return new ResponseEntity<>(updated, HttpStatus.OK);
     }
 
-    @DeleteMapping("/{username}/delete")
-    public ResponseEntity<?> deleteAccount(@PathVariable("username") String username, Authentication authentication) {
-      if (accountService.delete(username, authentication)){
-          return new ResponseEntity<>("true",HttpStatus.OK);
-      }
-      return new ResponseEntity<>("false",HttpStatus.NOT_FOUND);
+    @DeleteMapping
+    public ResponseEntity<Void> deleteAccount(Authentication authentication) {
+      accountService.delete(authentication);
+      return new ResponseEntity<>(HttpStatus.OK);
     }
 }
