@@ -10,14 +10,17 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 
 @ControllerAdvice
 public class ExceptionController {
+
     @ExceptionHandler(NotFoundEntityException.class)
     public ResponseEntity<?> handleEntityNotFoundException(NotFoundEntityException ex) {
         return new ResponseEntity<>(ex.getMessage(), HttpStatus.NOT_FOUND);
     }
+
     @ExceptionHandler(UncheckedIllegalAccessException.class)
     public ResponseEntity<?> handleIllegalErrorException(UncheckedIllegalAccessException ex) {
         return new ResponseEntity<>(ex.getMessage(), HttpStatus.FORBIDDEN);
     }
+
     @ExceptionHandler(AccountAlreadyExistsException.class)
     public ResponseEntity<?> handleAccountAlreadyExistsException(AccountAlreadyExistsException ex) {
         return new ResponseEntity<>(ex.getMessage(), HttpStatus.CONFLICT);

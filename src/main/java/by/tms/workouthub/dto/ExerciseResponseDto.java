@@ -17,6 +17,7 @@ import java.util.Map;
 @NoArgsConstructor
 @ToString
 public class ExerciseResponseDto {
+    private Long id;
     private String name;
     private String description;
     private ExerciseType exerciseType;

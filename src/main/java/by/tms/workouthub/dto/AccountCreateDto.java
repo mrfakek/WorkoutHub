@@ -18,8 +18,10 @@ import lombok.ToString;
 @JsonIgnoreProperties(ignoreUnknown = true)
 @ToString
 public class AccountCreateDto {
+
     @NotBlank
     private String username;
+
     @NotBlank
     @Pattern(regexp = "^(?=.*[A-Z])(?=.*[a-z])(?=.*\\d)(?=.*[@$!%*?&])[A-Za-z\\d@$!%*?&]{8,}$",
             message = "Your password must be at least 8 characters long and include at least one uppercase letter," +

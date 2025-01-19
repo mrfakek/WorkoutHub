@@ -18,7 +18,6 @@ import java.util.List;
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @ToString
 public class AccountResponseDto {
-
     private String username;
     private String email;
     private String firstName;
@@ -29,5 +28,4 @@ public class AccountResponseDto {
     private Anthropometry currentAnthropometry;
     private List<AnthropometryHistory> anthropometryHistory;
     private LocalDateTime createdAt;
-
 }

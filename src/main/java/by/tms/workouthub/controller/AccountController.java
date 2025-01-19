@@ -47,6 +47,6 @@ public class AccountController {
     @DeleteMapping
     public ResponseEntity<Void> deleteAccount(Authentication authentication) {
       accountService.delete(authentication);
-      return new ResponseEntity<>(HttpStatus.OK);
+      return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 }
