@@ -2,12 +2,15 @@ package by.tms.workouthub.entity;
 
 import jakarta.persistence.*;
 import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 import lombok.ToString;
 
 import java.time.LocalDateTime;
 
 @Entity
-@Data
+@Getter
+@Setter
 @ToString
 @Table(name = "anthropometry_historys")
 public class AnthropometryHistory {
@@ -15,7 +18,7 @@ public class AnthropometryHistory {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     @ManyToOne
-    @JoinColumn(name = "account_id")
+    @JoinColumn(name = "account_id", nullable = false)
     private Account owner;
     private double height;
     private double weight;

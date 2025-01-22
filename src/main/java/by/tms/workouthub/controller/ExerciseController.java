@@ -33,7 +33,7 @@ public ExerciseController(ExerciseService exerciseService) {
 
     @GetMapping
     public ResponseEntity<List<ExerciseResponseDto>> getAllExercises() {
-    return new ResponseEntity(exerciseService.getAll(), HttpStatus.OK);
+    return new ResponseEntity<>(exerciseService.getAll(), HttpStatus.OK);
     }
 
     @PutMapping

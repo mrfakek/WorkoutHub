@@ -3,6 +3,8 @@ package by.tms.workouthub.entity;
 import by.tms.workouthub.enums.Role;
 import jakarta.persistence.*;
 import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 import lombok.ToString;
 
 import java.time.LocalDateTime;
@@ -11,7 +13,8 @@ import java.util.List;
 
 
 @Entity
-@Data
+@Getter
+@Setter
 @ToString
 @Table(name = "accounts")
 public class Account {
@@ -29,14 +32,15 @@ public class Account {
     private String password;
     @Enumerated(EnumType.STRING)
     private Role role;
+    @ToString.Exclude
     @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, mappedBy = "owner")
     private List<Workout> workouts = new ArrayList<>();
 
-    @OneToOne(cascade = CascadeType.ALL)
+    @OneToOne(cascade = CascadeType.ALL, orphanRemoval = true)
     @JoinColumn(name = "current_anthropometry_id")
     private Anthropometry currentAnthropometry;
-
-    @OneToMany(mappedBy = "owner", cascade = CascadeType.ALL)
+    @ToString.Exclude
+    @OneToMany(mappedBy = "owner", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<AnthropometryHistory> anthropometryHistory;
 
     @Temporal(TemporalType.TIMESTAMP)

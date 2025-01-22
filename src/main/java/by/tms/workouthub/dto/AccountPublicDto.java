@@ -11,7 +11,7 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @ToString
 @JsonInclude(JsonInclude.Include.NON_NULL)
-public class PublicAccountDto {
+public class AccountPublicDto {
     private String username;
     private String firstName;
     private String lastName;

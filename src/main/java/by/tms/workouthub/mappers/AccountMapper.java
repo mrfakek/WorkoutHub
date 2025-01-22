@@ -1,7 +1,7 @@
 package by.tms.workouthub.mappers;
 
 import by.tms.workouthub.dto.AccountResponseDto;
-import by.tms.workouthub.dto.PublicAccountDto;
+import by.tms.workouthub.dto.AccountPublicDto;
 import by.tms.workouthub.entity.Account;
 import org.mapstruct.Mapper;
 
@@ -9,5 +9,5 @@ import org.mapstruct.Mapper;
 public interface AccountMapper {
     AccountResponseDto toAccountResponseDto(Account account);
     Account toAccount(AccountResponseDto accountResponseDto);
-    PublicAccountDto toPublicAccountDto(Account account);
+    AccountPublicDto toAccountPublicDto(Account account);
 }

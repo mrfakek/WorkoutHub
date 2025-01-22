@@ -4,13 +4,16 @@ import by.tms.workouthub.enums.ExerciseType;
 import by.tms.workouthub.enums.MuscleGroup;
 import jakarta.persistence.*;
 import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 import lombok.ToString;
 
 import java.util.EnumMap;
 import java.util.Map;
 
 @Entity
-@Data
+@Getter
+@Setter
 @ToString
 @Table(name = "exercises")
 public class Exercise {

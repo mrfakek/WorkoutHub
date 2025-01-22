@@ -1,9 +1,9 @@
 package by.tms.workouthub.service;
 
 import by.tms.workouthub.dto.AccountCreateDto;
+import by.tms.workouthub.dto.AccountPublicDto;
 import by.tms.workouthub.dto.AccountResponseDto;
 import by.tms.workouthub.dto.AccountUpdateDto;
-import by.tms.workouthub.dto.PublicAccountDto;
 import by.tms.workouthub.entity.Account;
 import by.tms.workouthub.enums.Role;
 import by.tms.workouthub.exceptions.AccessDeniedException;
@@ -49,14 +49,15 @@ public class AccountService implements UserDetailsService {
         AccountResponseDto accountResponseDto = accountMapper.toAccountResponseDto(newAccount);
         return accountResponseDto;
     }
+
     public AccountResponseDto getAccount(Authentication authentication) {
         Account account = accountRepository.findByUsername(authentication.getName()).orElseThrow(() -> new NotFoundEntityException("Account not found"));
         return accountMapper.toAccountResponseDto(account);
     }
 
-    public PublicAccountDto getAccountByUsername(String username) {
+    public AccountPublicDto getAccountByUsername(String username) {
         Account account = accountRepository.findByUsername(username).orElseThrow(()->new NotFoundEntityException("Account not found"));
-            return accountMapper.toPublicAccountDto(account);
+            return accountMapper.toAccountPublicDto(account);
 
     }
 
@@ -72,13 +73,6 @@ public class AccountService implements UserDetailsService {
     public void delete(Authentication authentication) {
         Account account = accountRepository.findByUsername(authentication.getName()).orElseThrow(() -> new NotFoundEntityException("Account not found"));
         accountRepository.delete(account);
-    }
-
-    public void checkAccount(String username, Authentication authentication) {
-        String currentUsername = ((User) authentication.getPrincipal()).getUsername();
-        if (!username.equals(currentUsername)) {
-            throw new AccessDeniedException("You do not have sufficient access rights to modify this account.");
-        }
     }
 
     @Override
