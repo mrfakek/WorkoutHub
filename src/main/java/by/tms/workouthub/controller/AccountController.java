@@ -14,7 +14,6 @@ import org.springframework.web.bind.annotation.*;
 
 
 @RestController
-@EqualsAndHashCode(callSuper = false)
 @RequestMapping("/account")
 public class AccountController {
 

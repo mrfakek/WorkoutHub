@@ -31,17 +31,17 @@ public class WorkoutController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<WorkoutResponseDto> getWorkoutById(@PathVariable long id, Authentication authentication) {
+    public ResponseEntity<WorkoutResponseDto> getWorkoutById(@PathVariable Long id, Authentication authentication) {
         return new ResponseEntity<>(workoutService.findById(id, authentication), HttpStatus.OK);
     }
 
-    @PutMapping
-    public ResponseEntity<WorkoutResponseDto> updateWorkout(@RequestBody WorkoutUpdateDto workoutUpdateDto, Authentication authentication) {
-        return new ResponseEntity<>(workoutService.update(workoutUpdateDto, authentication), HttpStatus.OK);
+    @PatchMapping("/{id}")
+    public ResponseEntity<WorkoutResponseDto> updateWorkout(@PathVariable Long id, @RequestBody WorkoutUpdateDto workoutUpdateDto, Authentication authentication) {
+        return new ResponseEntity<>(workoutService.update(id, workoutUpdateDto, authentication), HttpStatus.OK);
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteWorkout(@PathVariable long id, Authentication authentication) {
+    public ResponseEntity<Void> deleteWorkout(@PathVariable Long id, Authentication authentication) {
         workoutService.delete(id, authentication);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }

@@ -20,13 +20,25 @@ public class Anthropometry {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    @OneToOne(mappedBy = "currentAnthropometry")
-    private Account owner;
     @Temporal(TemporalType.DATE)
     private LocalDate birthday;
-    private int age;
-    private double height;
-    private double weight;
+    private Integer age;
+    private Double height;
+    private Double bodyweight;
+    private Double chestCircumference;
+    private Double waistCircumference;
+    private Double bicepCircumference;
+    private Double forearmCircumference;
+    private Double hipCircumference;
+    private Double thighCircumference;
+    private Double calfCircumference;
+
     @Temporal(TemporalType.TIMESTAMP)
     private LocalDateTime createdAt;
+    @PostLoad
+    public void calculateAge(){
+        if (birthday != null && createdAt != null) {
+            this.age = createdAt.toLocalDate().getYear() - birthday.getYear();
+        }
+    }
 }

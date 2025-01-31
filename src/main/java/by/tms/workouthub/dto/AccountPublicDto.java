@@ -9,7 +9,6 @@ import java.time.LocalDateTime;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-@ToString
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class AccountPublicDto {
     private String username;

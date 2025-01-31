@@ -23,7 +23,7 @@ public class Workout {
 
     @Temporal(TemporalType.TIMESTAMP)
     private LocalDateTime workoutDateTime;
-
+    @ToString.Exclude
     @ManyToOne
     @JoinColumn(name = "account_id", nullable = false)
     private Account owner;

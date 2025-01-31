@@ -43,19 +43,36 @@ public class WorkoutService {
         return workoutMapper.toWorkoutResponseDto(workout);
     }
 
-    public WorkoutResponseDto update(WorkoutUpdateDto workoutUpdateDto, Authentication authentication) {
-        return null;
+    public WorkoutResponseDto update(Long id, WorkoutUpdateDto workoutUpdateDto, Authentication authentication) {
+        Workout workoutForUpdate = workoutRepository.findById(id).orElseThrow(()->new NotFoundEntityException("Workout not found"));
+        validateAccess(workoutForUpdate, authentication);
+        workoutForUpdate = workoutMapper.updateWorkout(workoutUpdateDto, workoutForUpdate, exerciseRepository);
+        for (WorkoutExercise exercise : workoutForUpdate.getWorkoutExercises()) {
+            exercise.setWorkout(workoutForUpdate);
+        }
+        workoutForUpdate = workoutRepository.save(workoutForUpdate);
+        return workoutMapper.toWorkoutResponseDto(workoutForUpdate);
     }
 
     public void delete(Long id, Authentication authentication) {
+        Workout workout = workoutRepository.findById(id).orElseThrow(()->new NotFoundEntityException("Workout not found"));
+        validateAccess(workout, authentication);
+        workoutRepository.deleteById(id);
     }
 
     public List<WorkoutResponseDto> getAll(Authentication authentication) {
-        return null;
+        Account account = accountRepository.findByUsername(authentication.getName()).orElseThrow(()->new NotFoundEntityException("Account not found"));
+        List<Workout> workouts= workoutRepository.findByOwner(account);
+        if (workouts.isEmpty()) {
+            throw new NotFoundEntityException("Workout not found");
+        }
+        return workoutMapper.toWorkoutResponseDtos(workouts);
     }
 
     public WorkoutResponseDto findById(Long id, Authentication authentication) {
-        return null;
+        Workout workout = workoutRepository.findById(id).orElseThrow(()->new NotFoundEntityException("Workout not found"));
+        validateAccess(workout, authentication);
+        return workoutMapper.toWorkoutResponseDto(workout);
     }
 
     public void validateAccess(Workout workout, Authentication authentication) {

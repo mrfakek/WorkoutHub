@@ -41,7 +41,7 @@ public class Account {
     private Anthropometry currentAnthropometry;
     @ToString.Exclude
     @OneToMany(mappedBy = "owner", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<AnthropometryHistory> anthropometryHistory;
+    private List<AnthropometryHistory> anthropometryHistory = new ArrayList<>();
 
     @Temporal(TemporalType.TIMESTAMP)
     private LocalDateTime createdAt;

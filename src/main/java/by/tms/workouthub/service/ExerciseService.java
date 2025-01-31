@@ -43,8 +43,8 @@ public class ExerciseService {
                 .collect(Collectors.toList());
     }
 
-    public ExerciseResponseDto update(ExerciseUpdateDto exerciseUpdateDto) {
-        Exercise exerciseForUpdate = exerciseRepository.findById(exerciseUpdateDto.getId())
+    public ExerciseResponseDto update(Long id, ExerciseUpdateDto exerciseUpdateDto) {
+        Exercise exerciseForUpdate = exerciseRepository.findById(id)
                 .orElseThrow(() -> new NotFoundEntityException("Exercise not found"));
         exerciseForUpdate = exerciseMapper.updateExercise(exerciseUpdateDto, exerciseForUpdate);
         return exerciseMapper.toExerciseResponseDto(exerciseRepository.save(exerciseForUpdate));

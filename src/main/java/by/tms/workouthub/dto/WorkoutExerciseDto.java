@@ -12,7 +12,6 @@ import lombok.*;
 @NoArgsConstructor
 @JsonIgnoreProperties(ignoreUnknown = true)
 @Builder
-@ToString
 public class WorkoutExerciseDto {
     @NotBlank(message = "Exercise name must not be blank")
     private String exerciseName;
@@ -21,6 +20,8 @@ public class WorkoutExerciseDto {
     private Integer durationInSeconds;
     @DecimalMin(value = "0.0", inclusive = false, message = "Weight must be greater than 0.0")
     private Double weight;
+    @DecimalMin(value = "0.0", inclusive = false, message = "Distance must be greater than 0.0")
+    private Double distance;
     @Min(value = 1, message = "Repetitions must be at least 1")
     private Integer repetitions;
     @Min(value = 1, message = "Sets must be at least 1")

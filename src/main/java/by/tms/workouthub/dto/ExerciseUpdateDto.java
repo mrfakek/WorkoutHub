@@ -19,11 +19,8 @@ import java.util.Map;
 @AllArgsConstructor
 @NoArgsConstructor
 @JsonIgnoreProperties(ignoreUnknown = true)
-@ToString
 public class ExerciseUpdateDto {
 
-    @NotBlank
-    private Long id;
 
     @NotBlank
     private String name;

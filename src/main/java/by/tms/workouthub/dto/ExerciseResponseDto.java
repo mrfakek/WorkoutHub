@@ -15,7 +15,6 @@ import java.util.Map;
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @AllArgsConstructor
 @NoArgsConstructor
-@ToString
 public class ExerciseResponseDto {
     private Long id;
     private String name;

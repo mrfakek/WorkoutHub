@@ -20,9 +20,10 @@ public class WorkoutExercise {
     @JoinColumn(name = "exercise_id", nullable = false)
     private Exercise exercise;
 
-    private int durationInSeconds;
-    private double weight;
-    private int repetitions;
-    private int sets;
-    private int repsInReserve;
+    private Integer durationInSeconds;
+    private Double weight;
+    private Double distance;
+    private Integer repetitions;
+    private Integer sets;
+    private Integer repsInReserve;
 }

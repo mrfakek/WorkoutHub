@@ -7,11 +7,14 @@ public enum MuscleGroup {
     TRICEPS,
     BICEPS,
     FOREARMS,
+    QUADRICEPS,
     CALVES,
     HAMSTRINGS,
     GLUTES,
     SHOULDERS,
     TRAPS,
     LATS,
-    LOWER_BACK
+    RHOMBOIDS,
+    TERES_MAJOR,
+    SPINAL_ERECTORS
 }

@@ -27,7 +27,7 @@ public ExerciseController(ExerciseService exerciseService) {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<ExerciseResponseDto> getExerciseById(@PathVariable long id) {
+    public ResponseEntity<ExerciseResponseDto> getExerciseById(@PathVariable Long id) {
     return new ResponseEntity<>(exerciseService.getById(id), HttpStatus.OK);
     }
 
@@ -36,9 +36,9 @@ public ExerciseController(ExerciseService exerciseService) {
     return new ResponseEntity<>(exerciseService.getAll(), HttpStatus.OK);
     }
 
-    @PutMapping
-    public ResponseEntity<ExerciseResponseDto> updateExercise(@RequestBody ExerciseUpdateDto exerciseUpdateDto) {
-    return new ResponseEntity<>(exerciseService.update(exerciseUpdateDto), HttpStatus.OK);
+    @PatchMapping("/{id}")
+    public ResponseEntity<ExerciseResponseDto> updateExercise(@PathVariable Long id, @RequestBody ExerciseUpdateDto exerciseUpdateDto) {
+    return new ResponseEntity<>(exerciseService.update(id, exerciseUpdateDto), HttpStatus.OK);
 }
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteExercise(@PathVariable Long id) {

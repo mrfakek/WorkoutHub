@@ -1,10 +1,11 @@
 package by.tms.workouthub.dto;
 
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import lombok.ToString;
+
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -12,7 +13,7 @@ import java.util.List;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-@ToString
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class WorkoutResponseDto {
     private Long id;
     private String title;

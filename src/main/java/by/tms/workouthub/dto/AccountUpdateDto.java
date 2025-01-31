@@ -8,7 +8,6 @@ import lombok.*;
 @NoArgsConstructor
 @JsonIgnoreProperties(ignoreUnknown = true)
 @Builder
-@ToString
 public class AccountUpdateDto {
     private String email;
     private String firstName;

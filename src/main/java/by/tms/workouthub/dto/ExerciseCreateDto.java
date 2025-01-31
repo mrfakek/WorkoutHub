@@ -18,7 +18,6 @@ import java.util.Map;
 @AllArgsConstructor
 @NoArgsConstructor
 @JsonIgnoreProperties(ignoreUnknown = true)
-@ToString
 public class ExerciseCreateDto {
 
     @NotBlank

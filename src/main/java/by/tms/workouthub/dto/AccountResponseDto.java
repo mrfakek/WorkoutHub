@@ -16,8 +16,8 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 @JsonInclude(JsonInclude.Include.NON_NULL)
-@ToString
 public class AccountResponseDto {
+    private Long id;
     private String username;
     private String email;
     private String firstName;
