@@ -3,7 +3,6 @@ package by.tms.workouthub.entity;
 import by.tms.workouthub.enums.ExerciseType;
 import by.tms.workouthub.enums.MuscleGroup;
 import jakarta.persistence.*;
-import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;

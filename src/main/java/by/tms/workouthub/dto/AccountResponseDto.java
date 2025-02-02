@@ -1,13 +1,8 @@
 package by.tms.workouthub.dto;
 
-import by.tms.workouthub.entity.Anthropometry;
-import by.tms.workouthub.entity.AnthropometryHistory;
-import by.tms.workouthub.entity.Workout;
 import by.tms.workouthub.enums.Role;
 import com.fasterxml.jackson.annotation.JsonInclude;
-import jakarta.persistence.*;
 import lombok.*;
-
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -24,8 +19,8 @@ public class AccountResponseDto {
     private String lastName;
     private String password;
     private Role role;
-    private List<Workout> workouts = new ArrayList<>();
-    private Anthropometry currentAnthropometry;
-    private List<AnthropometryHistory> anthropometryHistory;
+    private List<WorkoutResponseDto> workouts = new ArrayList<>();
+    private AnthropometryResponseDto currentAnthropometry;
+    private List<AnthropometryResponseDto> anthropometryHistory;
     private LocalDateTime createdAt;
 }

@@ -3,6 +3,11 @@ package by.tms.workouthub.controller;
 
 import by.tms.workouthub.dto.AuthRequestDto;
 import by.tms.workouthub.utils.JwtUtil;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import jakarta.validation.Valid;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -25,8 +30,14 @@ public class AuthController {
         this.authenticationManager = authenticationManager;
     }
 
+    @Operation(summary = "User login",
+            description = "Authenticates a user and returns a JWT token for further authenticated requests.",
+            responses = {
+                    @ApiResponse(responseCode = "200", description = "Login successful, JWT token returned", content = @Content(mediaType = "application/json", schema = @Schema(implementation = String.class))),
+                    @ApiResponse(responseCode = "400", description = "Invalid username or password", content = @Content(mediaType = "application/json"))
+            })
     @PostMapping("/login")
-    public String login(@RequestBody AuthRequestDto dto) {
+    public String login(@RequestBody @Valid AuthRequestDto dto) {
         Authentication authentication = authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(dto.getUsername(), dto.getPassword()));
         UserDetails userDetails = (UserDetails) authentication.getPrincipal();

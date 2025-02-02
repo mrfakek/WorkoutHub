@@ -25,6 +25,7 @@ public interface WorkoutMapper {
             @Mapping(target = "id", ignore = true),
             @Mapping(target = "owner", ignore = true)
     })
+    @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
     Workout updateWorkout(WorkoutUpdateDto workoutUpdateDto, @MappingTarget Workout workout, @Context ExerciseRepository exerciseRepository);
 
     @Mapping(target = "exercise", expression = "java(toExercise(workoutExerciseDto, exerciseRepository))")

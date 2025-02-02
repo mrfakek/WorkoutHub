@@ -6,7 +6,6 @@ import by.tms.workouthub.dto.AccountResponseDto;
 import by.tms.workouthub.dto.AccountUpdateDto;
 import by.tms.workouthub.entity.Account;
 import by.tms.workouthub.enums.Role;
-import by.tms.workouthub.exceptions.AccessDeniedException;
 import by.tms.workouthub.exceptions.AccountAlreadyExistsException;
 import by.tms.workouthub.exceptions.NotFoundEntityException;
 import by.tms.workouthub.mappers.AccountMapper;
@@ -19,6 +18,7 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.Optional;

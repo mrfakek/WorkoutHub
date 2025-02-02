@@ -1,14 +1,15 @@
 package by.tms.workouthub.entity;
 
+import by.tms.workouthub.enums.Sex;
 import jakarta.persistence.*;
-import lombok.Data;
+
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.Date;
+
 
 @Entity
 @Getter
@@ -20,6 +21,8 @@ public class Anthropometry {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+    @Enumerated(EnumType.STRING)
+    private Sex sex;
     @Temporal(TemporalType.DATE)
     private LocalDate birthday;
     private Integer age;
@@ -27,7 +30,7 @@ public class Anthropometry {
     private Double bodyweight;
     private Double chestCircumference;
     private Double waistCircumference;
-    private Double bicepCircumference;
+    private Double bicepsCircumference;
     private Double forearmCircumference;
     private Double hipCircumference;
     private Double thighCircumference;

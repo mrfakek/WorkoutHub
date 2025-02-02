@@ -5,18 +5,14 @@ import by.tms.workouthub.dto.AnthropometryResponseDto;
 import by.tms.workouthub.dto.AnthropometryUpdateDto;
 import by.tms.workouthub.entity.Anthropometry;
 import by.tms.workouthub.entity.AnthropometryHistory;
-import org.mapstruct.Mapper;
-import org.mapstruct.Mapping;
-import org.mapstruct.MappingTarget;
-
-import java.util.List;
+import org.mapstruct.*;
 
 @Mapper(componentModel = "spring")
 public interface AnthropometryMapper {
     AnthropometryResponseDto toAnthropometryResponseDto(Anthropometry anthropometry);
-    Anthropometry toAnthropometry(AnthropometryCreateDto anthropometryCreateDto);
     @Mapping(target = "id", ignore = true)
-    AnthropometryHistory toAnthropometryHistory(Anthropometry anthropometry);
-    List<AnthropometryResponseDto> toAnthropometryResponseDtoList(List<AnthropometryHistory> anthropometryHistoryList);
+    Anthropometry toAnthropometryFromHistory(AnthropometryHistory anthropometryHistory);
+    Anthropometry toAnthropometry(AnthropometryCreateDto anthropometryCreateDto);
+    @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
     Anthropometry updateAnthropometry(AnthropometryUpdateDto anthropometryUpdateDto,@MappingTarget Anthropometry anthropometry);
 }

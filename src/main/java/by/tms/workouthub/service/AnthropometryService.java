@@ -6,7 +6,6 @@ import by.tms.workouthub.dto.AnthropometryUpdateDto;
 import by.tms.workouthub.entity.Account;
 import by.tms.workouthub.entity.Anthropometry;
 import by.tms.workouthub.entity.AnthropometryHistory;
-import by.tms.workouthub.exceptions.AccessDeniedException;
 import by.tms.workouthub.exceptions.NotFoundEntityException;
 import by.tms.workouthub.mappers.AnthropometryMapper;
 import by.tms.workouthub.repository.AccountRepository;
@@ -17,7 +16,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
-import java.util.List;
+import java.util.Optional;
 
 
 @Service
@@ -27,54 +26,60 @@ public class AnthropometryService {
     private final AnthropometryHistoryRepository anthropometryHistoryRepository;
     private final AnthropometryMapper anthropometryMapper;
     private final AccountRepository accountRepository;
+    private final AnthropometryHistoryService anthropometryHistoryService;
 
     public AnthropometryService(AnthropometryRepository anthropometryRepository,
                                 AnthropometryHistoryRepository anthropometryHistoryRepository,
                                 AnthropometryMapper anthropometryMapper,
-                                AccountRepository accountRepository) {
+                                AccountRepository accountRepository,
+                                AnthropometryHistoryService anthropometryHistoryService) {
         this.anthropometryRepository = anthropometryRepository;
         this.anthropometryHistoryRepository = anthropometryHistoryRepository;
         this.anthropometryMapper = anthropometryMapper;
         this.accountRepository = accountRepository;
+        this.anthropometryHistoryService = anthropometryHistoryService;
     }
 
-    public AnthropometryResponseDto getCurrentAnthropometryByOwner(Authentication authentication) {
+    public AnthropometryResponseDto getCurrentAnthropometry(Authentication authentication) {
         Account account = accountRepository.findByUsername(authentication.getName()).orElseThrow(()->new NotFoundEntityException("Account not found"));
         Anthropometry currentAnthropometry = account.getCurrentAnthropometry();
+        if (currentAnthropometry == null) {
+            throw new NotFoundEntityException("Current anthropometry not found");
+        }
         return anthropometryMapper.toAnthropometryResponseDto(currentAnthropometry);
     }
 
-    public List<AnthropometryResponseDto> getHistoryOfAnthropometry (Authentication authentication) {
-        Account account = accountRepository.findByUsername(authentication.getName()).orElseThrow(()->new NotFoundEntityException("Account not found"));
-        List<AnthropometryHistory> anthropometryHistorieList = anthropometryHistoryRepository.findByOwner(account);
-        if (anthropometryHistorieList.isEmpty()) {
-            throw new NotFoundEntityException("Anthropometry history not found");
-        }
-        return anthropometryMapper.toAnthropometryResponseDtoList(anthropometryHistorieList);
-    }
+
 
     public AnthropometryResponseDto createAnthropometry(AnthropometryCreateDto anthropometryCreateDto, Authentication authentication) {
         Account account =accountRepository.findByUsername(authentication.getName()).orElseThrow(()->new NotFoundEntityException("Account not found"));
         Anthropometry currentAnthropometry = account.getCurrentAnthropometry();
         Anthropometry newAnthropometry = anthropometryMapper.toAnthropometry(anthropometryCreateDto);
         newAnthropometry.setCreatedAt(LocalDateTime.now());
-       if (currentAnthropometry == null) {
+       if (currentAnthropometry != null) {
+        anthropometryHistoryService.addAnthropometryHistory(account);
+       }
         account.setCurrentAnthropometry(newAnthropometry);
         accountRepository.save(account);
-          return anthropometryMapper.toAnthropometryResponseDto(newAnthropometry);
-       }
-        AnthropometryHistory anthropometryInHistory = anthropometryMapper.toAnthropometryHistory(currentAnthropometry);
-       anthropometryInHistory.setOwner(account);
-       account.getAnthropometryHistory().add(anthropometryInHistory);
-        account = accountRepository.save(account);
         return anthropometryMapper.toAnthropometryResponseDto(account.getCurrentAnthropometry());
     }
 
-    public void deleteAnthropometryById(Long anthropometryId, Authentication authentication) {
-        AnthropometryHistory anthropometryHistory = anthropometryHistoryRepository.findById(anthropometryId).orElseThrow(()->new NotFoundEntityException("Anthropometry not found"));
-       validateAccess(anthropometryHistory, authentication);
-            anthropometryHistoryRepository.delete(anthropometryHistory);
+    public void deleteCurrentAnthropometry(Authentication authentication) {
+        Account account = accountRepository.findByUsername(authentication.getName()).orElseThrow(()->new NotFoundEntityException("Account not found"));
+        Optional<AnthropometryHistory> lastAnthropometryFromHistoryOpt = anthropometryHistoryRepository
+                .findTopByOwnerOrderByCreatedAtDesc(account);
+        if (lastAnthropometryFromHistoryOpt.isPresent()) {
+            Anthropometry newCurrentAnthropometry = anthropometryMapper.toAnthropometryFromHistory(lastAnthropometryFromHistoryOpt.get());
+            account.getAnthropometryHistory().remove(lastAnthropometryFromHistoryOpt.get());
+            account.setCurrentAnthropometry(newCurrentAnthropometry);
+            accountRepository.save(account);
+        }
+        else {
+            account.setCurrentAnthropometry(null);
+            accountRepository.save(account);
+        }
     }
+
     public AnthropometryResponseDto updateCurrentAnthropometry(AnthropometryUpdateDto updateDto, Authentication authentication) {
         Account account = accountRepository.findByUsername(authentication.getName()).orElseThrow(()->new NotFoundEntityException("Account not found"));
         Anthropometry anthropometryForUpdate = account.getCurrentAnthropometry();
@@ -83,10 +88,4 @@ public class AnthropometryService {
         return anthropometryMapper.toAnthropometryResponseDto(anthropometryForUpdate);
     }
 
-    public void validateAccess(AnthropometryHistory anthropometryHistory, Authentication authentication) {
-        Account account = accountRepository.findByUsername(authentication.getName()).orElseThrow(()->new NotFoundEntityException("Account not found"));
-        if (!anthropometryHistory.getOwner().getId().equals(account.getId())) {
-            throw new AccessDeniedException("Account is not the owner of this Anthropometry, Access denied.");
-        }
-    }
 }
