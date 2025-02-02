@@ -9,6 +9,7 @@ import jakarta.validation.Valid;
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -33,10 +34,10 @@ public class ExerciseUpdateDto {
     private String description;
 
     @Schema(description = "The type of exercise", example = "STRENGTH", allowableValues = {"STRENGTH", "CARDIO", "CALISTHENIC"})
-    @NotBlank(message = "Exercise type is required")
+    @NotNull(message = "Exercise type is required")
     private ExerciseType exerciseType;
 
     @Schema(description = "Muscle groups and their usage percentage in the exercise", example = "{CHEST=30, TRICEPS=50, SHOULDERS=20}")
     @Valid
-    private Map<@NotBlank MuscleGroup, @Min(1) @Max(100) Integer> muscleUsagePercentages = new EnumMap<>(MuscleGroup.class);
+    private Map<@NotNull MuscleGroup, @Min(1) @Max(100) Integer> muscleUsagePercentages = new EnumMap<>(MuscleGroup.class);
 }

@@ -18,7 +18,6 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.Optional;
@@ -40,7 +39,7 @@ public class AccountService implements UserDetailsService {
         newAccount.setUsername(accountCreateDto.getUsername());
         newAccount.setPassword(new BCryptPasswordEncoder(11).encode(accountCreateDto.getPassword()));
         newAccount.setCreatedAt(LocalDateTime.now());
-        newAccount.setRole(Role.ADMIN);
+        newAccount.setRole(Role.USER);
         try {
             newAccount = accountRepository.save(newAccount);
         }catch (DataIntegrityViolationException e){

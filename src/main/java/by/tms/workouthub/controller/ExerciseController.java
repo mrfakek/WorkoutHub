@@ -12,6 +12,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -32,6 +33,7 @@ public ExerciseController(ExerciseService exerciseService) {
             @ApiResponse(description = "Bad request", responseCode = "400"),
             @ApiResponse(description = "Access denied", responseCode = "403")
     })
+    @PreAuthorize("hasRole('ADMIN') or hasRole('MODERATOR')")
     @PostMapping
     public ResponseEntity<ExerciseResponseDto> createExercise(  @io.swagger.v3.oas.annotations.parameters.RequestBody(description = "Data for creating a new exercise", required = true)
                                                                     @RequestBody @Valid ExerciseCreateDto exerciseCreateDto) {
@@ -61,6 +63,7 @@ public ExerciseController(ExerciseService exerciseService) {
             @ApiResponse(description = "Access denied", responseCode = "403"),
             @ApiResponse(description = "Exercise not found", responseCode = "404")
     })
+    @PreAuthorize("hasRole('ADMIN') or hasRole('MODERATOR')")
     @ValidateThis
     @PatchMapping("/{id}")
     public ResponseEntity<ExerciseResponseDto> updateExercise(@PathVariable Long id,
@@ -75,6 +78,7 @@ public ExerciseController(ExerciseService exerciseService) {
             @ApiResponse(description = "Access denied", responseCode = "403"),
             @ApiResponse(description = "Exercise not found", responseCode = "404")
     })
+    @PreAuthorize("hasRole('ADMIN') or hasRole('MODERATOR')")
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteExercise(@PathVariable Long id) {
     exerciseService.delete(id);

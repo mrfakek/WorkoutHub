@@ -28,11 +28,11 @@ public class ExerciseCreateDto {
     @Schema(description = "A brief description of the exercise", example = "A basic chest exercise targeting the pectorals")
     private String description;
 
-    @NotBlank(message = "Exercise type is required")
+    @NotNull(message = "Exercise type is required")
     @Schema(description = "The type of exercise", example = "STRENGTH", allowableValues = {"STRENGTH", "CARDIO", "CALISTHENIC"})
     private ExerciseType exerciseType;
 
     @Schema(description = "Muscle groups and their usage percentage in the exercise", example = "{CHEST=70, TRICEPS=20, SHOULDERS=10}")
     @Valid
-    private Map<@NotBlank MuscleGroup, @Min(1) @Max(100) Integer>  muscleUsagePercentages = new EnumMap<>(MuscleGroup.class);
+    private Map<@NotNull MuscleGroup, @Min(1) @Max(100) Integer>  muscleUsagePercentages = new EnumMap<>(MuscleGroup.class);
 }
